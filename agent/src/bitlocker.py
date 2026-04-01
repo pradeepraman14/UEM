@@ -4,7 +4,7 @@ import subprocess
 import json
 from typing import Any
 
-from agent.src.logger import get_logger
+from src.logger import get_logger
 
 logger = get_logger(__name__)
 

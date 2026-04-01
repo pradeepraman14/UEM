@@ -6,8 +6,8 @@ from typing import Callable, Awaitable, Any
 
 import psutil
 
-from agent.src.config import AGENT_VERSION
-from agent.src.logger import get_logger
+from src.config import AGENT_VERSION
+from src.logger import get_logger
 
 logger = get_logger(__name__)
 

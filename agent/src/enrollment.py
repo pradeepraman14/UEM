@@ -14,8 +14,8 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
 
-from agent.src.config import AgentConfig, CERT_DIR, AGENT_VERSION
-from agent.src.logger import get_logger
+from src.config import AgentConfig, CERT_DIR, AGENT_VERSION
+from src.logger import get_logger
 
 logger = get_logger(__name__)
 

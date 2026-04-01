@@ -5,7 +5,7 @@ from pathlib import Path
 
 import structlog
 
-from agent.src.config import LOG_DIR, AGENT_VERSION
+from src.config import LOG_DIR, AGENT_VERSION
 
 
 def setup_logging(level: str = "INFO", log_to_file: bool = True) -> None:

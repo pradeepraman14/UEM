@@ -3,10 +3,10 @@ import asyncio
 from datetime import datetime, timezone
 from typing import Any, Callable, Awaitable
 
-from agent.src.inventory.hardware import collect_hardware
-from agent.src.inventory.software import collect_software
-from agent.src.inventory.network import collect_network
-from agent.src.logger import get_logger
+from src.inventory.hardware import collect_hardware
+from src.inventory.software import collect_software
+from src.inventory.network import collect_network
+from src.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -45,7 +45,7 @@ class InventoryCollector:
 
         # BitLocker status
         try:
-            from agent.src.bitlocker import collect_bitlocker
+            from src.bitlocker import collect_bitlocker
             bl = await asyncio.get_event_loop().run_in_executor(None, collect_bitlocker)
             payload["bitlocker"] = bl
         except Exception as e:

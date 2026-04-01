@@ -13,7 +13,7 @@ from typing import Any, Callable, Awaitable
 import websockets
 from websockets.exceptions import ConnectionClosed, WebSocketException
 
-from agent.src.logger import get_logger
+from src.logger import get_logger
 
 logger = get_logger(__name__)
 

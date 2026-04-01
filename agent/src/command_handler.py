@@ -6,8 +6,8 @@ import platform
 import subprocess
 from typing import Any, Callable, Awaitable
 
-from agent.src.config import AgentConfig
-from agent.src.logger import get_logger
+from src.config import AgentConfig
+from src.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -44,7 +44,7 @@ class CommandHandler:
             return
 
         if cmd_type in ("shell", "powershell", "cmd"):
-            from agent.src.remote.shell import run_command
+            from src.remote.shell import run_command
             shell = "powershell" if cmd_type in ("shell", "powershell") else "cmd"
             await run_command(
                 correlation_id=correlation_id or "",
@@ -63,14 +63,14 @@ class CommandHandler:
             is_last = payload.get("done", False)
             sha256 = payload.get("sha256")
             if chunk_data:
-                from agent.src.remote.file_transfer import receive_file_chunk
+                from src.remote.file_transfer import receive_file_chunk
                 await receive_file_chunk(dest, chunk_data, chunk_index, is_last, sha256)
 
         elif cmd_type == "file_download":
             # Device uploads a file TO the server
             source_path = payload.get("source_path")
             if source_path:
-                from agent.src.remote.file_transfer import send_file
+                from src.remote.file_transfer import send_file
                 await send_file(
                     correlation_id=correlation_id or "",
                     device_id=self.config.device_id,
@@ -130,7 +130,7 @@ class CommandHandler:
         elif cmd_type in ("install", "uninstall"):
             pkg = payload.get("package", {})
             if pkg.get("winget_id"):
-                from agent.src.patch.thirdparty import install_via_winget, uninstall_via_winget
+                from src.patch.thirdparty import install_via_winget, uninstall_via_winget
                 if cmd_type == "install":
                     result = install_via_winget(pkg["winget_id"])
                 else:
@@ -143,7 +143,7 @@ class CommandHandler:
                 async with httpx.AsyncClient(verify=False) as client:
                     resp = await client.get(pkg["download_url"])
                     tmp.write_bytes(resp.content)
-                from agent.src.patch.thirdparty import install_msi
+                from src.patch.thirdparty import install_msi
                 result = install_msi(str(tmp), pkg.get("install_args"))
             else:
                 result = {"success": False, "message": "No valid install source"}
@@ -156,7 +156,7 @@ class CommandHandler:
             })
 
         elif cmd_type == "policy_apply":
-            from agent.src.policy.executor import execute_policy
+            from src.policy.executor import execute_policy
             action = payload.get("action")
             if action == "enable_bitlocker":
                 result = await execute_policy("bitlocker", payload)
@@ -168,14 +168,14 @@ class CommandHandler:
                 })
 
     async def _handle_policy(self, correlation_id: str | None, payload: dict[str, Any]) -> None:
-        from agent.src.policy.executor import execute_policy
+        from src.policy.executor import execute_policy
         policy_type = payload.get("policy_type", "")
         config = payload.get("config", {})
         result = await execute_policy(policy_type, config)
         logger.info("Policy applied", type=policy_type, success=result.get("success"))
 
     async def _handle_patch(self, correlation_id: str | None, payload: dict[str, Any]) -> None:
-        from agent.src.patch.wua import install_patches
+        from src.patch.wua import install_patches
         patch_ids = payload.get("patch_ids", [])
         install_all = payload.get("install_all_approved", False)
         result = install_patches(kb_ids=patch_ids or None, install_all=install_all)

@@ -13,18 +13,18 @@ if platform.system() == "Windows":
     import servicemanager
 
 
-from agent.src.config import AgentConfig
-from agent.src.logger import setup_logging, get_logger
+from src.config import AgentConfig
+from src.logger import setup_logging, get_logger
 
 logger = get_logger(__name__)
 
 
 async def run_agent(config: AgentConfig) -> None:
     """Main agent async loop - starts all background services."""
-    from agent.src.transport.ws_client import WSClient
-    from agent.src.heartbeat import HeartbeatService
-    from agent.src.inventory.collector import InventoryCollector
-    from agent.src.command_handler import CommandHandler
+    from src.transport.ws_client import WSClient
+    from src.heartbeat import HeartbeatService
+    from src.inventory.collector import InventoryCollector
+    from src.command_handler import CommandHandler
 
     handler = CommandHandler(config)
 

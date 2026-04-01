@@ -4,7 +4,7 @@ import subprocess
 import platform
 from typing import Any, Callable, Awaitable
 
-from agent.src.logger import get_logger
+from src.logger import get_logger
 
 logger = get_logger(__name__)
 

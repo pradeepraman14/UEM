@@ -5,7 +5,7 @@ import platform
 import subprocess
 from typing import Any
 
-from agent.src.logger import get_logger
+from src.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -48,7 +48,7 @@ async def _evaluate_rule(rule: dict[str, Any]) -> dict[str, Any]:
 async def _get_actual_value(check_type: str) -> Any:
     """Get the actual system value for a given check type."""
     if check_type == "bitlocker_enabled":
-        from agent.src.bitlocker import collect_bitlocker
+        from src.bitlocker import collect_bitlocker
         bl = collect_bitlocker()
         return str(bl.get("is_enabled", False)).lower()
 
@@ -76,7 +76,7 @@ async def _get_actual_value(check_type: str) -> Any:
         return platform.release()
 
     elif check_type == "patch_level":
-        from agent.src.patch.wua import scan_missing_patches
+        from src.patch.wua import scan_missing_patches
         patches = scan_missing_patches()
         critical = sum(1 for p in patches if p.get("severity") == "critical")
         return f"{critical}_critical_missing" if critical == 0 else f"{critical}_critical_missing"
