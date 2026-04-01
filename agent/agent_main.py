@@ -19,9 +19,9 @@ import platform
 
 def cmd_enroll(args):
     """Enroll this device with the UEM server."""
-    from agent.src.config import AgentConfig
-    from agent.src.logger import setup_logging
-    from agent.src.enrollment import enroll
+    from src.config import AgentConfig
+    from src.logger import setup_logging
+    from src.enrollment import enroll
 
     setup_logging("INFO", log_to_file=False)
     config = AgentConfig()
@@ -38,9 +38,9 @@ def cmd_enroll(args):
 
 def cmd_run():
     """Run the agent in foreground (non-service mode, for testing)."""
-    from agent.src.config import AgentConfig
-    from agent.src.logger import setup_logging
-    from agent.src.service import run_agent
+    from src.config import AgentConfig
+    from src.logger import setup_logging
+    from src.service import run_agent
 
     config = AgentConfig()
     setup_logging("DEBUG", log_to_file=False)
@@ -76,7 +76,7 @@ def main():
 
     # Windows service management
     if platform.system() == "Windows":
-        from agent.src.service import main as svc_main
+        from src.service import main as svc_main
         svc_main()
     else:
         if sys.argv[1] in ("install", "start", "stop", "remove"):
