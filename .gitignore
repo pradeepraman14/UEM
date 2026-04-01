@@ -1,0 +1,73 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+pip-wheel-metadata/
+*.spec
+
+# PyInstaller
+agent/dist/
+agent/build/
+agent/installer/UEMAgentSetup*.exe
+
+# Node / Frontend
+node_modules/
+server/frontend/dist/
+server/frontend/.vite/
+.pnp
+.pnp.js
+
+# Environment
+.env
+*.env.local
+*.env.*.local
+
+# PKI / secrets (never commit real certs)
+pki/ca.key
+pki/ca.crt
+pki/server.key
+pki/server.crt
+pki/server.csr
+pki/*.pem
+
+# Database
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker volumes (local dev)
+postgres_data/
+redis_data/
+
+# Coverage / test artifacts
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# Alembic generated (keep versions dir, ignore .pyc inside)
+server/backend/alembic/versions/__pycache__/
