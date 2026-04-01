@@ -97,10 +97,10 @@ class InstalledSoftware(Base):
         sa.Index(
             "idx_software_fts",
             sa.func.to_tsvector(
-                "english",
-                sa.func.coalesce(sa.text("display_name"), sa.literal(""))
+                sa.literal_column("'english'::regconfig"),
+                sa.func.coalesce(sa.column("display_name"), "")
                 + sa.literal(" ")
-                + sa.func.coalesce(sa.text("publisher"), sa.literal("")),
+                + sa.func.coalesce(sa.column("publisher"), ""),
             ),
             postgresql_using="gin",
         ),
