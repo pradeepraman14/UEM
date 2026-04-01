@@ -1,24 +1,26 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import {
-  Button, Input, Select, Space, Tag, Badge, Tooltip, Typography, Row, Col, Card
+  Button, Input, Select, Space, Tag, Badge, Typography, Row, Col, Card,
+  Modal, Descriptions, Alert, Spin, message,
 } from 'antd'
 import {
-  SearchOutlined, ReloadOutlined, PlusOutlined, FilterOutlined
+  SearchOutlined, ReloadOutlined, PlusOutlined, CopyOutlined, KeyOutlined,
 } from '@ant-design/icons'
 import { AgGridReact } from 'ag-grid-react'
 import type { ColDef } from 'ag-grid-community'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 import { devicesApi } from '@/api/devices'
+import { apiClient } from '@/api/client'
 import type { Device } from '@/types'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 dayjs.extend(relativeTime)
 
-const { Title } = Typography
+const { Title, Text } = Typography
 
 export default function DeviceListPage() {
   const navigate = useNavigate()
@@ -26,7 +28,9 @@ export default function DeviceListPage() {
   const [statusFilter, setStatusFilter] = useState<string | undefined>()
   const [complianceFilter, setComplianceFilter] = useState<string | undefined>()
   const [onlineFilter, setOnlineFilter] = useState<boolean | undefined>()
-  const [page, setPage] = useState(1)
+  const [page] = useState(1)
+  const [enrollOpen, setEnrollOpen] = useState(false)
+  const [enrollToken, setEnrollToken] = useState<string | null>(null)
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['devices', page, search, statusFilter, complianceFilter, onlineFilter],
@@ -41,6 +45,27 @@ export default function DeviceListPage() {
       }),
     refetchInterval: 30_000,
   })
+
+  const tokenMutation = useMutation({
+    mutationFn: () =>
+      apiClient.post('/devices/generate-token').then((r) => r.data as { enrollment_token: string }),
+    onSuccess: (data) => {
+      setEnrollToken(data.enrollment_token)
+    },
+  })
+
+  const openEnrollModal = () => {
+    setEnrollToken(null)
+    setEnrollOpen(true)
+    tokenMutation.mutate()
+  }
+
+  const copy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text)
+    message.success(`${label} copied to clipboard`)
+  }
+
+  const serverUrl = window.location.origin
 
   const columnDefs = useMemo<ColDef<Device>[]>(() => [
     {
@@ -136,7 +161,7 @@ export default function DeviceListPage() {
         <Title level={4} style={{ margin: 0 }}>Devices ({data?.total || 0})</Title>
         <Space>
           <Button icon={<ReloadOutlined />} onClick={() => refetch()}>Refresh</Button>
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate('/devices?enroll=1')}>
+          <Button type="primary" icon={<PlusOutlined />} onClick={openEnrollModal}>
             Enroll Device
           </Button>
         </Space>
@@ -212,6 +237,70 @@ export default function DeviceListPage() {
           headerHeight={42}
         />
       </div>
+
+      {/* Enrollment Token Modal */}
+      <Modal
+        title={<Space><KeyOutlined /> Enroll a Windows Device</Space>}
+        open={enrollOpen}
+        onCancel={() => setEnrollOpen(false)}
+        footer={<Button onClick={() => setEnrollOpen(false)}>Close</Button>}
+        width={600}
+      >
+        {tokenMutation.isPending && (
+          <div style={{ textAlign: 'center', padding: 32 }}>
+            <Spin size="large" />
+            <div style={{ marginTop: 12 }}>Generating enrollment token...</div>
+          </div>
+        )}
+
+        {enrollToken && (
+          <Space direction="vertical" style={{ width: '100%' }} size={16}>
+            <Alert
+              type="info"
+              message="Token is valid for 24 hours. Use it on the Windows machine to enroll the agent."
+              showIcon
+            />
+
+            <Descriptions bordered size="small" column={1}>
+              <Descriptions.Item label="Server URL">
+                <Space>
+                  <Text code>{serverUrl}</Text>
+                  <Button size="small" icon={<CopyOutlined />} onClick={() => copy(serverUrl, 'Server URL')} />
+                </Space>
+              </Descriptions.Item>
+              <Descriptions.Item label="Enrollment Token">
+                <Space>
+                  <Text code style={{ wordBreak: 'break-all' }}>{enrollToken}</Text>
+                  <Button size="small" icon={<CopyOutlined />} onClick={() => copy(enrollToken, 'Token')} />
+                </Space>
+              </Descriptions.Item>
+            </Descriptions>
+
+            <Card size="small" title="Run on Windows machine (Administrator PowerShell)">
+              <Text code style={{ whiteSpace: 'pre-wrap', fontSize: 12 }}>
+                {`# 1. Download and install the agent\n.\\UEMAgentSetup.exe /S /SERVER=${serverUrl} /TOKEN=${enrollToken}\n\n# Or enroll manually if agent is already installed:\nUEMAgent.exe enroll --server ${serverUrl} --token ${enrollToken}`}
+              </Text>
+              <Button
+                size="small"
+                icon={<CopyOutlined />}
+                style={{ marginTop: 8 }}
+                onClick={() => copy(
+                  `UEMAgent.exe enroll --server ${serverUrl} --token ${enrollToken}`,
+                  'Command'
+                )}
+              >
+                Copy command
+              </Button>
+            </Card>
+
+            <Alert
+              type="warning"
+              message="Make sure the Windows machine has the CA certificate installed. Download it from your server at /opt/UEM/pki/ca/ca.crt"
+              showIcon
+            />
+          </Space>
+        )}
+      </Modal>
     </div>
   )
 }
