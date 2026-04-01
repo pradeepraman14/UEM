@@ -93,10 +93,7 @@ def issue_device_certificate(
         .add_extension(
             x509.SubjectAlternativeName([
                 x509.DNSName(hostname),
-                x509.OtherName(
-                    x509.oid.ObjectIdentifier("1.3.6.1.4.1.99999.1"),
-                    device_uuid.encode(),
-                ),
+                x509.UniformResourceIdentifier(f"uem:device:{device_uuid}"),
             ]),
             critical=False,
         )
