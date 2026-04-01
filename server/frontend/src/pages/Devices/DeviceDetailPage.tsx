@@ -179,7 +179,7 @@ export default function DeviceDetailPage() {
                   size="small"
                   pagination={{ pageSize: 20 }}
                   columns={[
-                    { title: 'Name', dataIndex: 'name', flex: 1 },
+                    { title: 'Name', dataIndex: 'name', ellipsis: true },
                     { title: 'Publisher', dataIndex: 'publisher', width: 200 },
                     { title: 'Version', dataIndex: 'version', width: 120 },
                     {
@@ -208,7 +208,7 @@ export default function DeviceDetailPage() {
                     rowKey="rule_name"
                     size="small"
                     columns={[
-                      { title: 'Rule', dataIndex: 'rule_name', flex: 1 },
+                      { title: 'Rule', dataIndex: 'rule_name', ellipsis: true },
                       { title: 'Category', dataIndex: 'category', width: 100 },
                       {
                         title: 'Severity', dataIndex: 'severity', width: 100,

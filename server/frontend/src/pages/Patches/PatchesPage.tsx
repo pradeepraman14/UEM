@@ -104,7 +104,7 @@ export default function PatchesPage() {
           }}
           columns={[
             { title: 'KB', dataIndex: 'kb_article_id', width: 100, render: (v) => v || '—' },
-            { title: 'Title', dataIndex: 'title', flex: 1 },
+            { title: 'Title', dataIndex: 'title', ellipsis: true },
             {
               title: 'Severity', dataIndex: 'severity', width: 100,
               render: (v) => <Tag color={severityColor(v)}>{v || '—'}</Tag>,
