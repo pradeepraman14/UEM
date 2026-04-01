@@ -77,12 +77,17 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
           padding: collapsed ? 0 : '0 16px',
           borderBottom: '1px solid rgba(255,255,255,0.1)',
           cursor: 'pointer',
+          gap: 10,
         }}
         onClick={() => navigate('/dashboard')}
       >
-        <span style={{ fontSize: 20 }}>🖥️</span>
+        <img
+          src="/logo.png"
+          alt="Applaude"
+          style={{ height: 28, width: 'auto', objectFit: 'contain', flexShrink: 0 }}
+        />
         {!collapsed && (
-          <span style={{ color: '#fff', marginLeft: 8, fontWeight: 700, fontSize: 15, letterSpacing: 0.5 }}>
+          <span style={{ color: '#fff', fontWeight: 700, fontSize: 14, letterSpacing: 0.5, whiteSpace: 'nowrap' }}>
             UEM Console
           </span>
         )}

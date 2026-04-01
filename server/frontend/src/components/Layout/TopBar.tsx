@@ -75,12 +75,17 @@ export default function TopBar({ collapsed, onCollapse }: TopBarProps) {
         height: 56,
       }}
     >
-      <Button
-        type="text"
-        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={() => onCollapse(!collapsed)}
-        style={{ fontSize: 16 }}
-      />
+      <Space size={12}>
+        <Button
+          type="text"
+          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          onClick={() => onCollapse(!collapsed)}
+          style={{ fontSize: 16 }}
+        />
+        {collapsed && (
+          <img src="/logo.png" alt="Applaude" style={{ height: 24, width: 'auto', objectFit: 'contain' }} />
+        )}
+      </Space>
 
       <Space size={8}>
         <Badge count={unreadCount} size="small">

@@ -50,7 +50,11 @@ export default function LoginPage() {
       >
         <Space direction="vertical" size={8} style={{ width: '100%', marginBottom: 32 }}>
           <div style={{ textAlign: 'center' }}>
-            <span style={{ fontSize: 40 }}>🖥️</span>
+            <img
+              src="/logo.png"
+              alt="Applaude"
+              style={{ height: 56, width: 'auto', objectFit: 'contain' }}
+            />
           </div>
           <Title level={3} style={{ textAlign: 'center', margin: 0 }}>
             UEM Console
