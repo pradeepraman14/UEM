@@ -9,11 +9,38 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies (stub app dir so pip can parse pyproject.toml)
+# Upgrade pip/setuptools first, then install dependencies directly
 COPY pyproject.toml .
-RUN mkdir -p app && touch app/__init__.py && \
-    pip install --no-cache-dir . && \
-    rm -rf app
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir \
+        fastapi==0.111.0 \
+        "uvicorn[standard]==0.30.1" \
+        starlette==0.37.2 \
+        python-multipart==0.0.9 \
+        "sqlalchemy[asyncio]==2.0.30" \
+        asyncpg==0.29.0 \
+        alembic==1.13.1 \
+        "redis[hiredis]==5.0.4" \
+        "celery[redis]==5.4.0" \
+        kombu==5.3.7 \
+        "python-jose[cryptography]==3.3.0" \
+        "passlib[bcrypt]==1.7.4" \
+        cryptography==42.0.7 \
+        pydantic==2.7.1 \
+        pydantic-settings==2.2.1 \
+        email-validator==2.1.1 \
+        httpx==0.27.0 \
+        python-dateutil==2.9.0 \
+        pytz==2024.1 \
+        aiofiles==23.2.1 \
+        orjson==3.10.3 \
+        Pillow==10.3.0 \
+        reportlab==4.1.0 \
+        openpyxl==3.1.2 \
+        pandas==2.2.2 \
+        aiosmtplib==3.0.1 \
+        jinja2==3.1.4 \
+        structlog==24.2.0
 
 # Copy application source
 COPY . .
