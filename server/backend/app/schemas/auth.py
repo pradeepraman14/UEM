@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    email: str  # plain str to accept internal domains like .local
     password: str
 
 
