@@ -9,9 +9,11 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Install Python dependencies (stub app dir so pip can parse pyproject.toml)
 COPY pyproject.toml .
-RUN pip install --no-cache-dir -e .
+RUN mkdir -p app && touch app/__init__.py && \
+    pip install --no-cache-dir . && \
+    rm -rf app
 
 # Copy application source
 COPY . .
